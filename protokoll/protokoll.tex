@@ -182,7 +182,69 @@ Wir haben den selben Befehl länger laufen lassen (10 Minuten) und sind so zu un
 
 \subsection{VoIP}
 
-Wir haben die abgefangenen Pakete (in der \lstinline{.cap} Datei von \lstinline{airodump-ng})
+Wir haben die abgefangenen Pakete (in der \lstinline{.cap} Datei von \lstinline{airodump-ng}) in Wireshark geöffnet um diese zu untersuchen.
+
+Unter dem Menü-Punkt \lstinline{Telephony/VoIP Calls} habe ich alle in dem Paket enthaltenen VoIP Calls angezeigt bekommen.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ws_voipcalls_wnd.png}
+  \caption{Alle vorhandenen VoIP Calls}
+  \label{fig:allvoipcalls}
+\end{figure}
+
+Beim auswählen vom Ersten und \lstinline{Play Streams} klicken sieht man dass zwei Tonspuren gefunden wurden, anhand der beiden Flecken im angezeigten Diagram.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.5\textwidth]{./imgs/intranet_screenshots/ws_rtpplayer.png}
+  \caption{Tonspuren des VoIP Calls}
+  \label{fig:rtpplayer}
+\end{figure}
+
+Um die Pakete die zu diesem einem VoIP Call gehören aus dem \lstinline{.cap} File zu filtern bin ich zurück zum Hauptfenster und filtere nach \lstinline{sip || rtp} damit ich alle Pakete finde die für den Aufbau der Verbindung nötig sind (sip) oder die Daten selbst sind (rtp).
+
+Im Fenster (wo nun alle relevanten Pakete sind) habe ich mir das erste sip Paket das ein Invite Request ist unter die Lupe genommen. Dort habe ich im Message-Header nach der Call-ID gesucht und alle Pakete mit der selben Call-ID gleich gefärbt werden sollen.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=1\textwidth]{./imgs/intranet_screenshots/ws_sipcallfilter.png}
+  \caption{Filtern eines SIP Calls}
+  \label{fig:sipcallfilter}
+\end{figure}
+
+Nun hab ich farblich abgestimmt gesehen welche SIP-Pakete zusammen gehören.
+
+Wenn ich mir das erste RTP-Paket anschaue, sehe ich dass es zum ersten SIP-Call gehört anhand dem referenzierten Setup Paket.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.5\textwidth]{./imgs/intranet_screenshots/ws_rtppaket.png}
+  \caption{RTP Paket Untersuchung}
+  \label{fig:rtppacket}
+\end{figure}
+
+Um das RTP Paket richtig zu decodieren, decodiere ich es als UDP Paket, weil das aus dem RDP Paket aus sichtbar ist dass es über UDP geschickt worden ist. \lstinline{Rechtsklick/Decode As../}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.5\textwidth]{./imgs/intranet_screenshots/ws_decodeas.png}
+  \caption{Decode As}
+  \label{fig:rtppacket}
+\end{figure}
+
+Nun kann ich sämtliche Streams unter \lstinline{Telephony/RTP/Stream Analysis} speichern und mir mit VLC anhören.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ws_streamanalysis.png}
+  \caption{Stream Analysis}
+  \label{fig:rtppacket}
+\end{figure}
+
+Um die eine Richtung als Audio-Datei zu bekommen habe ich \lstinline{Unsynchronized Forward Stream Audio} gewählt und für die Audiospur des zweiten Gesprächsteilnehmer \lstinline{Unsynchronized Reverse Stream Audio}.
+
+Beim Reverse Audio bekommt man eine Kontonummer für eine Transaktion, \lstinline{17321809}.
 
 \subsection{E-Mail}
 \emph{TO BE DONE}
