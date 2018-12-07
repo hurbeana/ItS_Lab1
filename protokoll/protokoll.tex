@@ -230,7 +230,7 @@ Um das RTP Paket richtig zu decodieren, decodiere ich es als UDP Paket, weil das
   \centering
     \includegraphics[width=0.5\textwidth]{./imgs/intranet_screenshots/ws_decodeas.png}
   \caption{Decode As}
-  \label{fig:rtppacket}
+  \label{fig:decodeas}
 \end{figure}
 
 Nun kann ich sämtliche Streams unter \lstinline{Telephony/RTP/Stream Analysis} speichern und mir mit VLC anhören.
@@ -554,8 +554,60 @@ At trying 4769
 Password for 7z file is 4777 
 \end{lstlisting}
 
+\pagebreak
 \subsection{Proof of Work}
-\emph{TO BE DONE}
+\lstinputlisting[caption=proof\_of\_work.py,label=code:proofofwork]{proof_of_work.py}
+
+Dieses Script nimmt einen Suffix an und wenn kein Suffix gegeben ist wird der aus dem CTF genommen. Es berechnet die erste Zahl \lstinline{n} die mit dem Suffix zusammen als \lstinline{SHA-2-384} Hash mindestens 17 führende Nullen in Binär hat.
+
+Globale Variablen
+\begin{itemize}
+    \item suffix: Der Suffix mit dem die Hashes berechnet werden sollen
+    \item done: Ob wir fertig sind und die richtige Zahl gefunden haben
+    \item n: Die Zahl die mit dem Suffix concateniert wird um den Hash zu berechnen
+\end{itemize}
+
+Funktionen:
+\begin{itemize}
+    \item mask: Berechnet eine für m Bits wo die ersten n Bits mit 1 aufgefüllt werden. z.B. n = 4, m = 12: 111100000000
+    \item test\_0bits: Prüft ob in den gegebenen digest\_bytes die ersten n bits 0 sind
+\end{itemize}
+
+Erklärung \lstinline{mask}:
+\begin{itemize}
+    \item \lstinline{((1 << n) - 1)} erzeugt n 1en.
+    \item \lstinline{<< (m - n)} hängt m - n 0en an die 1en hinten an.
+    \item Diese Operationen funktionieren durch Bit-Shifting.
+\end{itemize}
+
+Erklärung \lstinline{test_0bits}:
+\begin{itemize}
+    \item Zeile 16: Die Funktion berechnet wie viele Bits in dem ganzen \lstinline{digest_bytes} Byte Array enthalten sind
+    \item Zeile 18: Konvertiert das Byte Array zu einem Integer Wert für spätere Berechnungen
+    \item Zeile 19: Prüft ob die Zeile logisch verknüpft mit \& und der Maske 0 ist. Dies ist nur der Fall wenn die ersten n Bits 0 sind.
+\end{itemize}
+
+Das Script wiederholt so lange den Prozess bis es einen richtigen Hash gefunden hat und setzt \lstinline{done} auf \lstinline{True}.
+
+Zuerst wird ein neuer Hash generiert. \lstinline{m.update()} setzt das zu gehashete in das hashlib Objekt.
+
+Anschließend wird \lstinline{m.digest()} (das ist der Hash) auf die 17 0 Bits geprüft.
+
+Wenn das Script mit dem Beispiel aus der CTF Angabe aufgerufen wird kommt folgender Output
+
+\begin{lstlisting}
+PS C:\Users\...\ItS_Lab1\labfiles\Scriptkiddie 101> python.exe .\proof_of_work.py o4ZdIddP3m0dAKNraZ cTZQdoLAJCc9c6
+Found the hash with number 128205
+\end{lstlisting}
+
+Beim Aufruf ohne Argument wird der Suffix genommen der zu berechnen ist
+
+\begin{lstlisting}
+PS C:\Users\...\ItS_Lab1\labfiles\Scriptkiddie 101> python.exe .\proof_of_work.py
+Found the hash with number 109620
+\end{lstlisting}
+
+Für den Suffix \lstinline{KKNrwOJpSoPnMS98rV5DXYWWSqod0aKs} ist die gesuchte Zahl \lstinline{109620}
 
 \subsection{Matryoshka}
 \emph{TO BE DONE}
