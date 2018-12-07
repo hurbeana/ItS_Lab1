@@ -408,7 +408,7 @@ Nach erfolgreichem Einloggen stehen drei Subseiten zur verfügung \lstinline{(Mi
 
 \subsection{Wer schürft am meisten?}
 
-Wenn man auf der Seite nun auf \lstinline{Miners} navigiert wird eine Liste von "Minern" angezeigt.
+Wenn man auf der Seite nun auf \lstinline{Miners} navigiert wird eine Liste von Minern angezeigt.
 Jedoch sind hier nicht alle Miner sichtbar, sondern nur die eigenen.
 
 \begin{figure}[h!]
@@ -455,10 +455,67 @@ Nun kann aus der Liste der \lstinline{Miner} mit den höchsten geschätzten Einn
 \end{figure}
 
 \subsection{Mein Wallet}
-\emph{TO BE DONE}
+
+Auf der Sub-Seite \lstinline{Wallet} gab es wieder einen Kommentar an den Entwickler:
+
+\begin{lstlisting}
+  <!--
+An den Entwickler: Diese Seite ist noch ganz am Anfang und wir sollten ueberpruefen ob es wirklich nicht moeglich ist auf andere Wallet zuzugreifen.
+DB Struktur ist folgende
+CREATE TABLE wallet (
+	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+	pub_key VARCHAR(32) UNIQUE,
+	amount DECIMAL(10,2),
+	last_used DATE,
+	active BIT DEFAULT(0)
+);
+-->
+\end{lstlisting}
+
+Dank der hier angeführten Struktur der Tabelle konnte man an einem Weg arbeiten die Wallet Daten von Anderen bzw. Allen anzuzeigen. Da auf dieser Seite kein Filterfeld vorhanden ist musste ein Weg gefunden werden, auf einer der anderen Seiten den Inhalt der Tabelle ausgeben zu können.
+
+Nach einigen Versuchen und weiterer Recherche bin ich auf den SQL-Befehl \lstinline{union all} gestoßen. Mit diesem kann man mehrere \lstinline{select statements} aneinander hängen und deren Ausgabe kombinieren. Jedoch muss dabei darauf geachtet werden, dass bei jedem \lstinline{select statement} gleich viele Spalten ausgewählt werden. Ich habe auf der \lstinline{Miners} Sub-Seite das Filterfeld genutzt um mehrere Tabelleninhalte auszugeben.
+
+Hier ist das \lstinline{SLQ-statement} das ich benutzt habe um die vollständigen Inhalte der Tabellen \lstinline{miner, wallet} und \lstinline{contacts} untereinander auszugeben:
+
+\begin{lstlisting}
+  *%' or 1 = 1) union all select id, name, name, pub_key, name, name from contacts union all select id, amount, last_used, pub_key, active, active from wallet--
+\end{lstlisting}
+
+Da es recht viele Einträge in der Tabelle \lstinline{wallet} gab und nicht alle davon relevant waren (bei \lstinline{active} Bit 0 gesetzt), habe ich diese kopiert und in einem Editor bearbeitet. Nun mussten noch die Kontostände der Einträge mit gesetztem \lstinline{active} Bit zu verglichen werden. Nachdem der höchste Kontostand gefunden war musste nur noch der \lstinline{public key} (Spalte \lstinline{"pub_key"}) ausgelesen werden.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.8\textwidth]{./imgs/manager9000/wallet_pub_key.png}
+\caption{Public key des höchsten Kontostands eines aktiven Wallets}
+\label{fig:wallet_pub_key}
+\end{figure}
 
 \subsection{CEO's key}
-\emph{TO BE DONE}
+
+Auch auf der Sub-Seite \lstinline{Contacts} war wieder ein hilfreicher Kommentar zu finden:
+
+\begin{lstlisting}
+  <!--
+An den Entwickler:
+Die Idee den Public-Key mit die Kontakte zu verknuepfen war eine schlechte Idee. Hab jetzt ganz schnell alles im Webinterface rueckgaengig gemacht. Die DB hab ich so gelassen, kann ja eh niemand den Wert von "pub_key" auslesen!
+-->
+\end{lstlisting}
+
+Um den \lstinline{public key} des CEO herauszufinden habe ich, da ich bereits alle Tabellen aufgelistet habe, den selben \lstinline{SQL-Befehl} verwendet:
+
+\begin{lstlisting}
+  *%' or 1 = 1) union all select id, name, name, pub_key, name, name from contacts union all select id, amount, last_used, pub_key, active, active from wallet--
+\end{lstlisting}
+
+Da ich also schon alle relevanten Daten aufgelistet habe, konnte ich den Eintrag des CEO einfach suchen und dessen \lstinline{public key} auslesen.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{./imgs/manager9000/ceo_pub_key.png}
+\caption{Public key des CEO}
+\label{fig:ceo_pub_key}
+\end{figure}
 
 \section{Scriptkiddie 101}
 
