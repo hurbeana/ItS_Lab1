@@ -11,7 +11,6 @@
 \documentclass[12pt,a4paper,titlepage,oneside]{scrartcl}
 \newcommand{\lang}{de}
 \usepackage{esseProtocol}
-\usepackage{wrapfig}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -347,7 +346,7 @@ Hier kann man das Passwort \lstinline{Aufmunterung} sehen.
 
 Einrichten der Verbindung:
 
-Da die Webseite (Manager9000) nur über die "tese.inso.tuwien.ac.at" \ erreichbar ist, muss zunächst eine ssh Portweiterleitung eingerichtet werden.
+Da die Webseite (Manager9000) nur über die \lstinline{tese.inso.tuwien.ac.at} erreichbar ist, muss zunächst eine ssh Portweiterleitung eingerichtet werden.
 
 \begin{lstlisting}
 C:\Users\bernh>ssh -ND 12345 e01627766@tese.inso.tuwien.ac.at -p 12345
@@ -358,7 +357,7 @@ Warning: Permanently added '[tese.inso.tuwien.ac.at]:12345,[128.130.59.16]:12345
 e01627766@tese.inso.tuwien.ac.at's password:
 \end{lstlisting}
 
-Danach kann man im Web Browser in den Proxy-Einstellungen als SOCKS-Host "localhost" \ und den gewählten Port eintragen. Nun kann die Seite (Manager9000) aufgerufen werden.
+Danach kann man im Web Browser in den Proxy-Einstellungen als \lstinline{SOCKS-Host "localhost"} und den gewählten \lstinline{Port} eintragen. Nun kann die Seite (Manager9000) aufgerufen werden.
 
 \begin{figure}[h!]
   \centering
@@ -394,17 +393,7 @@ Ein guter Anfang ist hier das Ausprobieren verschiedener Zeichen in den Formular
 
 Nach kurzer Recherche zu dieser Art von Schwachstelle und noch etwas Probieren sind wir bald auf die richtige Methode gekommen.
 
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=0.5\textwidth]{./imgs/manager9000/m9000_sql_error2.png}
-\caption{SQL Schwachstelle 2}
-\label{fig:sql_weakness2}
-\end{figure}
-
-\pagebreak
-
-In der \hyperref[fig:sql_weakness2]{Abbildung~\ref*{fig:sql_weakness2}} kann man bereits einen guten, jedoch noch nicht ganz korrekten Ansatz sehen.
-In \hyperref[fig:fig:sql_injection]{Abbildung~\ref*{fig:sql_injection}} ist die richtige Zeichenfolge zu sehen die für Nickname und Passwort verwendet werden kann, um diese zu umgehen.
+In \hyperref[fig:sql_injection]{Abbildung~\ref*{fig:sql_injection}} ist die richtige Zeichenfolge zu sehen die für Nickname und Passwort verwendet werden kann, um diese zu umgehen.
 
 \begin{figure}[h!]
   \centering
@@ -413,10 +402,57 @@ In \hyperref[fig:fig:sql_injection]{Abbildung~\ref*{fig:sql_injection}} ist die 
 \label{fig:sql_injection}
 \end{figure}
 
+Nach erfolgreichem Einloggen stehen drei Subseiten zur verfügung \lstinline{(Miners, Wallet und Kontakte)}.
+
 \pagebreak
 
 \subsection{Wer schürft am meisten?}
-\emph{TO BE DONE}
+
+Wenn man auf der Seite nun auf \lstinline{Miners} navigiert wird eine Liste von "Minern" angezeigt.
+Jedoch sind hier nicht alle Miner sichtbar, sondern nur die eigenen.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{./imgs/manager9000/miners_red.png}
+\caption{Miners}
+\label{fig:miners}
+\end{figure}
+
+Wie unten auf der Seite zu sehen ist gibt es zu den eigenen \lstinline{11} noch weitere \lstinline{39 Miner}.
+Diese galt es nun durch einen Missbrauch des Filters sichtbar zu machen.
+
+Dafür habe ich wieder eine Reihe an verschiedenen Zeichenfolgen in das Filterfeld eingegeben und die ausgegebene Fehlermeldung ausgewertet.
+Auch ist aufgefallen dass beim öffnen der Web-Entwicklerkonsole (oder Quelltext-Ansicht) ein Kommentar an den Entwickler mit hilfreichen Informationen hinterlassen wurde.
+
+\begin{lstlisting}
+  <!--
+An den Entwickler:
+Wegen deiner Frage....
+Habs jetzt mal schnell rein gecodet... Zurzeit speichern wir in der Spalte "own_by" den Namen der Person, welcher der Miner gehoert. Sollten dies vlt in Zukunft ueberdenken.
+Aber bereden wir das alles nach dem Urlaub :D Bin dann mal weg!!
+
+PS: Ach ja bevor ich es vergesse, ich muss zwecks Debuggen die SQL-Fehlerausgabe einschalten um den Filter zu verbessern, aber mach dir keine Sorgen
+  was soll beim Filtern schon viel schief gehen?!?
+-->
+\end{lstlisting}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.75\textwidth]{./imgs/manager9000/all_miners_red.png}
+\caption{Alle Miners}
+\label{fig:all_miners}
+\end{figure}
+
+In \hyperref[fig:all_miners]{Abbildung~\ref*{fig:all_miners}} kann man die \lstinline{SQL-injection} sehen mit der die Suche nach einem Namen umgangen wird und mit einem \lstinline{"or 1 = 1"} alle einträge angezeigt werden. Die Zeichenfolge \lstinline{"--"} am Ende wird benötigt um den restlichen noch vorhandenen Befehl auszukommentieren.
+
+Nun kann aus der Liste der \lstinline{Miner} mit den höchsten geschätzten Einnahmen ausgelesen und dessen Name ermittelt werden.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.9\textwidth]{./imgs/manager9000/highest_miner.png}
+\caption{Miner mit höchsten Einnahmen}
+\label{fig:highest_miner}
+\end{figure}
 
 \subsection{Mein Wallet}
 \emph{TO BE DONE}
