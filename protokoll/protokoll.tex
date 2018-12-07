@@ -517,11 +517,42 @@ Da ich also schon alle relevanten Daten aufgelistet habe, konnte ich den Eintrag
 \label{fig:ceo_pub_key}
 \end{figure}
 
+\pagebreak
 \section{Scriptkiddie 101}
 
 \subsection{Kompromitierte Sicherheit}
 
-\lstinputlisting[caption=openmeeasy.py,label=code:openmeeasy,style=c]{open_me_easy.py}
+\lstinputlisting[caption=open\_me\_easy.py,label=code:openmeeasy]{open_me_easy.py}
+
+Ich habe dieses Python geschrieben das als erstes Argument den Pfad zur \lstinline{.7z} Datei annimmt und mit \lstinline{7zip.exe} das 4-stellige Zahlen Passwort Brute-Forced.
+
+Globale Variablen
+\begin{itemize}
+    \item found: Ob das Passwort gefunden worden ist
+    \item start: Von wo zu Probieren angefangen werden soll
+    \item end: Bis wohin probiert werden soll
+    \item file: Den Pfad zur 7zip Datei
+\end{itemize}
+
+\lstinline{run_sev_zip(pwd)} führt \lstinline{7zip.exe} mit dem gegebenen Passwort \lstinline{pwd} aus und gibt das Passwort aus wenn es richtig war.
+
+Zeile 15 ruft \lstinline{7zip.exe} mit dem \lstinline{e} auf (für extract) und der angegebenen Datei \lstinline{file}. Nach dem Start wird per pipe das Passwort über stdin übergeben. Damit das \lstinline{7zip} beim Aufruf weder auf stdout oder stdin nichts ausgibt pipe ich sämtlichen Output zum subprocess.
+
+Wenn der return-code von \lstinline{7zip} 0 ist, ist es mir gelungen die \lstinline{.7z} zu entzippen.
+
+Das Script führt jeden Aufruf von \lstinline{7zip.exe} in einem eigenen Thread aus damit nicht auf die Ausführung von \lstinline{7zip.exe} gewartet wird.
+
+Wenn man das Script aufruft kommt folgender Output
+\begin{lstlisting}
+PS C:\Users\...\labfiles\Scriptkiddie 101> python .\open_me_easy.py ".\zips\open_me_easy.7z"
+At trying 0000
+At trying 0001
+.
+.
+At trying 4770
+At trying 4769
+Password for 7z file is 4777 
+\end{lstlisting}
 
 \subsection{Proof of Work}
 \emph{TO BE DONE}
