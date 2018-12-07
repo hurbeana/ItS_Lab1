@@ -1,9 +1,11 @@
 # proof-of-work.py
 import hashlib
-import binascii
-import bitstring
+import sys
 
-suffix = "KKNrwOJpSoPnMS98rV5DXYWWSqod0aKs"
+try:
+    suffix = sys.argv[1]
+except:
+    suffix = "KKNrwOJpSoPnMS98rV5DXYWWSqod0aKs"
 done = False
 n = 100000
 
