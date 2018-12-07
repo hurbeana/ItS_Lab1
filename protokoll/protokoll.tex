@@ -11,6 +11,7 @@
 \documentclass[12pt,a4paper,titlepage,oneside]{scrartcl}
 \newcommand{\lang}{de}
 \usepackage{esseProtocol}
+\usepackage{wrapfig}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -287,8 +288,71 @@ Als Ergebnis hatten wir anschließend rechts oben sichtbar einen WPA handshake a
 
 \section{Manager9000}
 
+Einrichten der Verbindung:
+
+Da die Webseite (Manager9000) nur über die "tese.inso.tuwien.ac.at" \ erreichbar ist, muss zunächst eine ssh Portweiterleitung eingerichtet werden.
+
+\begin{lstlisting}
+C:\Users\bernh>ssh -ND 12345 e01627766@tese.inso.tuwien.ac.at -p 12345
+The authenticity of host '[tese.inso.tuwien.ac.at]:12345 ([128.130.59.16]:12345)' can't be established.
+ECDSA key fingerprint is SHA256:xMYnf3yVpglNBSlUqiKgeyjcQHnZE6qCWKpxk/nKISI.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '[tese.inso.tuwien.ac.at]:12345,[128.130.59.16]:12345' (ECDSA) to the list of known hosts.
+e01627766@tese.inso.tuwien.ac.at's password:
+\end{lstlisting}
+
+Danach kann man im Web Browser in den Proxy-Einstellungen als SOCKS-Host "localhost" \ und den gewählten Port eintragen. Nun kann die Seite (Manager9000) aufgerufen werden.
+
+\begin{figure}[h!]
+  \centering
+  \fbox{
+    \includegraphics[width=0.75\textwidth]{./imgs/manager9000/proxy.png}
+  }
+  \caption{Browser-Verbindungseinstellungen}
+  \label{fig:proxy}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \fbox{
+    \includegraphics[width=0.65\textwidth]{./imgs/manager9000/enterSite.png}
+  }
+  \caption{Seitenaufruf}
+  \label{fig:enterSite}
+\end{figure}
+
+\pagebreak
+
 \subsection{Schwachstelle finden}
-\emph{TO BE DONE}
+
+\begin{wrapfigure}{r}{0.4\textwidth}
+    \includegraphics[width=0.4\textwidth]{./imgs/manager9000/m9000_sql_error1.png}
+  \caption{SQL Schwachstelle}
+  \label{fig:sql_weakness}
+\end{wrapfigure}
+
+\
+
+Die erste Aufgabe war durch das Herausfinden einer Schwachstelle sich auf der Seite, ohne bekannte Login-Daten, anzumelden.
+Ein guter Anfang ist hier das Ausprobieren verschiedener Zeichen in den Formularfeldern. Nach einigen Versuchen konnte man nach Eingabe eines \lstinline{"'"} sehen, dass es sich anscheinend um eine SQL(SQLite)-Schwachstelle handelt.
+
+Nach kurzer Recherche zu dieser Art von Schwachstelle und noch etwas Probieren sind wir bald auf die richtige Methode gekommen.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.4\textwidth]{./imgs/manager9000/m9000_sql_error2.png}
+\caption{SQL Schwachstelle 2}
+\label{fig:sql_weakness2}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.4\textwidth]{./imgs/manager9000/m9000_sql_injection.png}
+\caption{SQL Injection}
+\label{fig:sql_injection}
+\end{figure}
+
+\pagebreak
 
 \subsection{Wer schürft am meisten?}
 \emph{TO BE DONE}
