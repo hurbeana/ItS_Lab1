@@ -261,7 +261,7 @@ Um das RTP Paket richtig zu decodieren, decodiere ich es als UDP Paket, weil das
   \centering
     \includegraphics[width=0.5\textwidth]{./imgs/intranet_screenshots/ws_decodeas.png}
   \caption{Decode As}
-  \label{fig:rtppacket}
+  \label{fig:decodeas}
 \end{figure}
 
 Nun kann ich sämtliche Streams unter \lstinline{Telephony/RTP/Stream Analysis} speichern und mir mit VLC anhören.
@@ -548,14 +548,97 @@ Da ich also schon alle relevanten Daten aufgelistet habe, konnte ich den Eintrag
 \label{fig:ceo_pub_key}
 \end{figure}
 
+\pagebreak
 \section{Scriptkiddie 101}
 
 \subsection{Kompromitierte Sicherheit}
 
-\lstinputlisting[caption=openmeeasy.py,label=code:openmeeasy,style=c]{open_me_easy.py}
+\lstinputlisting[caption=open\_me\_easy.py,label=code:openmeeasy]{open_me_easy.py}
 
+Ich habe dieses Python geschrieben das als erstes Argument den Pfad zur \lstinline{.7z} Datei annimmt und mit \lstinline{7zip.exe} das 4-stellige Zahlen Passwort Brute-Forced.
+
+Globale Variablen
+\begin{itemize}
+    \item found: Ob das Passwort gefunden worden ist
+    \item start: Von wo zu Probieren angefangen werden soll
+    \item end: Bis wohin probiert werden soll
+    \item file: Den Pfad zur 7zip Datei
+\end{itemize}
+
+\lstinline{run_sev_zip(pwd)} führt \lstinline{7zip.exe} mit dem gegebenen Passwort \lstinline{pwd} aus und gibt das Passwort aus wenn es richtig war.
+
+Zeile 15 ruft \lstinline{7zip.exe} mit dem \lstinline{e} auf (für extract) und der angegebenen Datei \lstinline{file}. Nach dem Start wird per pipe das Passwort über stdin übergeben. Damit das \lstinline{7zip} beim Aufruf weder auf stdout oder stdin nichts ausgibt pipe ich sämtlichen Output zum subprocess.
+
+Wenn der return-code von \lstinline{7zip} 0 ist, ist es mir gelungen die \lstinline{.7z} zu entzippen.
+
+Das Script führt jeden Aufruf von \lstinline{7zip.exe} in einem eigenen Thread aus damit nicht auf die Ausführung von \lstinline{7zip.exe} gewartet wird.
+
+Wenn man das Script aufruft kommt folgender Output
+\begin{lstlisting}
+PS C:\Users\...\labfiles\Scriptkiddie 101> python .\open_me_easy.py ".\zips\open_me_easy.7z"
+At trying 0000
+At trying 0001
+.
+.
+At trying 4770
+At trying 4769
+Password for 7z file is 4777 
+\end{lstlisting}
+
+\pagebreak
 \subsection{Proof of Work}
-\emph{TO BE DONE}
+\lstinputlisting[caption=proof\_of\_work.py,label=code:proofofwork]{proof_of_work.py}
+
+Dieses Script nimmt einen Suffix an und wenn kein Suffix gegeben ist wird der aus dem CTF genommen. Es berechnet die erste Zahl \lstinline{n} die mit dem Suffix zusammen als \lstinline{SHA-2-384} Hash mindestens 17 führende Nullen in Binär hat.
+
+Globale Variablen
+\begin{itemize}
+    \item suffix: Der Suffix mit dem die Hashes berechnet werden sollen
+    \item done: Ob wir fertig sind und die richtige Zahl gefunden haben
+    \item n: Die Zahl die mit dem Suffix concateniert wird um den Hash zu berechnen
+\end{itemize}
+
+Funktionen:
+\begin{itemize}
+    \item mask: Berechnet eine für m Bits wo die ersten n Bits mit 1 aufgefüllt werden. z.B. n = 4, m = 12: 111100000000
+    \item test\_0bits: Prüft ob in den gegebenen digest\_bytes die ersten n bits 0 sind
+\end{itemize}
+
+Erklärung \lstinline{mask}:
+\begin{itemize}
+    \item \lstinline{((1 << n) - 1)} erzeugt n 1en.
+    \item \lstinline{<< (m - n)} hängt m - n 0en an die 1en hinten an.
+    \item Diese Operationen funktionieren durch Bit-Shifting.
+\end{itemize}
+
+Erklärung \lstinline{test_0bits}:
+\begin{itemize}
+    \item Zeile 16: Die Funktion berechnet wie viele Bits in dem ganzen \lstinline{digest_bytes} Byte Array enthalten sind
+    \item Zeile 18: Konvertiert das Byte Array zu einem Integer Wert für spätere Berechnungen
+    \item Zeile 19: Prüft ob die Zeile logisch verknüpft mit \& und der Maske 0 ist. Dies ist nur der Fall wenn die ersten n Bits 0 sind.
+\end{itemize}
+
+Das Script wiederholt so lange den Prozess bis es einen richtigen Hash gefunden hat und setzt \lstinline{done} auf \lstinline{True}.
+
+Zuerst wird ein neuer Hash generiert. \lstinline{m.update()} setzt das zu gehashete in das hashlib Objekt.
+
+Anschließend wird \lstinline{m.digest()} (das ist der Hash) auf die 17 0 Bits geprüft.
+
+Wenn das Script mit dem Beispiel aus der CTF Angabe aufgerufen wird kommt folgender Output
+
+\begin{lstlisting}
+PS C:\Users\...\ItS_Lab1\labfiles\Scriptkiddie 101> python.exe .\proof_of_work.py o4ZdIddP3m0dAKNraZ cTZQdoLAJCc9c6
+Found the hash with number 128205
+\end{lstlisting}
+
+Beim Aufruf ohne Argument wird der Suffix genommen der zu berechnen ist
+
+\begin{lstlisting}
+PS C:\Users\...\ItS_Lab1\labfiles\Scriptkiddie 101> python.exe .\proof_of_work.py
+Found the hash with number 109620
+\end{lstlisting}
+
+Für den Suffix \lstinline{KKNrwOJpSoPnMS98rV5DXYWWSqod0aKs} ist die gesuchte Zahl \lstinline{109620}
 
 \subsection{Matryoshka}
 \emph{TO BE DONE}
