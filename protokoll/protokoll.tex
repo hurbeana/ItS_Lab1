@@ -267,7 +267,37 @@ Nach einer kurzen Suche und dem Inspizieren mehrerer vielversprechender Pakete h
 \end{figure}
 
 \subsection{IRC}
-\emph{TO BE DONE}
+
+Ich habe die \lstinline{HotDogCap.cap} Datei, die wir aus der Labor Umgebung gecaptured haben, in Wireshark aufgemacht.
+
+Zuerst habe ich im Suchfenster nach IRC Paketen gefiltert mit dem Suchbefehl \lstinline{irc}, wobei mir aufgefallen ist dass einige \lstinline{PRIVMSG} IRC Befehle verschickt worden sind.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ws_ircfilter.png}
+  \caption{IRC Filter}
+  \label{fig:ircfilter}
+\end{figure}
+
+Anschließend habe ich eine der PRIVMSG Pakete ausgewählt und nur nach Paketen gefiltert die das Kommando enthalten. Anschließend kann man die entsprechende Nachricht finden die den Hash enthält.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ws_applyPrivMsgFilter.png}
+  \caption{PRIVMSG IRC Filter}
+  \label{fig:privmsgircfilter}
+\end{figure}
+
+Alternativ kann man auch auf eine IRC Nachricht \lstinline{Rechtsklick/Follow TCP Stream} und man bekommt die ganze Conversation.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ircfollowstream.png}
+  \caption{TCP Follow Stream}
+  \label{fig:tcpFollowStream}
+\end{figure}
+
+Und unten kann man da auch die Nachricht finden die den Hash enthält.
 
 \subsection{FTP}
 \emph{TO BE DONE}
