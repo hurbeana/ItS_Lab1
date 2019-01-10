@@ -300,12 +300,29 @@ Alternativ kann man auch auf eine IRC Nachricht \lstinline{Rechtsklick/Follow TC
 Und unten kann man da auch die Nachricht finden die den Hash enthält.
 
 \subsection{FTP}
-\emph{TO BE DONE}
+
+Mit der \lstinline{SecureHotDog.cap} Datei offen in Wireshark und dem WLAN Passwort aus WLAN-Passwort \ref{wlanpwd} habe ich das Passwort in Wireshark unter dem Menu \lstinline{Edit/Preferences/IEEE 802.11} eingetragen und sichergestellt dass verwendet wird Pakete zu entschlüsseln.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ws_decryptionKeys.png}
+  \caption{Decryption Keys in Wireshark}
+  \label{fig:decryptionKeys}
+\end{figure}
+
+Anschließend habe ich mir sämtliche TCP Streams (mit \lstinline{Rechtsklick/Follow TCP Stream} auf einem TCP Paket) wieder angeschaut und habe folgenden gefunden, wo Passwort und Nutzername einer FTP Transmission zu sehen sind.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ws_ftpStream.png}
+  \caption{FTP Transmission}
+  \label{fig:ftpTransmission}
+\end{figure}
 
 \subsection{FTP 2}
 \emph{TO BE DONE}
 
-\subsection{WLAN-Passwort}
+\subsection{WLAN-Passwort} \label{wlanpwd}
 
 Um an die Hashes des WPA-Passwortes zu kommen haben wir durch das oben angegebene Tutorial herausgefunden dass man mit \lstinline{airodump-ng -w psk wlp3s0} den nötigen Handshake abfangen kann. Dafür muss sich aber ein Client beim Router authentifizieren, worauf wir 10 Minuten lang gewartet haben, aber leider keinen Handshake abgefangen haben. Ein paar Minuten später haben wir herausgefunden, dass wir einen Client deauhentifizieren können mit \lstinline{aireplay-ng -0 1 -a  00:18:39:BF:D7:66 -c 80:1F:02:AB:A9:9E wlp3s0} wo die erste MAC Addresse die vom SecureHotDog ist und die zweite eine von den zwei Clients die wir beobachtet haben.
 
