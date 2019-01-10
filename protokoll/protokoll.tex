@@ -247,7 +247,24 @@ Um die eine Richtung als Audio-Datei zu bekommen habe ich \lstinline{Unsynchroni
 Beim Reverse Audio bekommt man eine Kontonummer für eine Transaktion, \lstinline{17321809}.
 
 \subsection{E-Mail}
-\emph{TO BE DONE}
+Um die Email zu finden habe ich zuerst nach verschiedenen Email Protokollen gefiltert.
+Mit dem \lstinline{SMTP} Protokoll wurden dann die richtigen Pakete angezeigt.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/smtp_filter.png}
+  \caption{Pakete filtern}
+  \label{fig:smtp_filter}
+\end{figure}
+
+Nach einer kurzen Suche und dem Inspizieren mehrerer vielversprechender Pakete habe ich das richtige gefunden und konnte dort das Passwort in klartext aus der Nachricht auslesen.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/email_pw.png}
+  \caption{Paswort aus der Email}
+  \label{fig:email_pw}
+\end{figure}
 
 \subsection{IRC}
 \emph{TO BE DONE}
