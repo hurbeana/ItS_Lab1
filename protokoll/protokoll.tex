@@ -319,7 +319,7 @@ Anschließend habe ich mir sämtliche TCP Streams (mit \lstinline{Rechtsklick/Fo
   \label{fig:ftpTransmission}
 \end{figure}
 
-\subsection{FTP 2}
+\subsection{FTP 2} \label{FTP2}
 
 Ausgehend vom dem Setup der letzten Aufgabe sieht man in dem \hyperref[fig:ftpTransmission]{Screenshot~\ref*{fig:ftpTransmission}} auch den Namen der Datei die verschickt worden ist. In dem nächsten TCP Stream kann man die Datei auch sehen, bei der es sich um einen Private Key handelt.
 
@@ -412,7 +412,26 @@ PS C:\Users\hurbe\Desktop\hashcat-5.0.0> .\hashcat64.exe -a 0 -m 2500 --show .\S
 Hier kann man das Passwort \lstinline{Aufmunterung} sehen.
 
 \subsection{HTTPS}
-\emph{TO BE DONE}
+
+Mit dem Private Key aus \hyperref[FTP2]{FTP2~\ref*{FTP2}} kann ich nun den verschlüsselten Traffic lesen. Dazu trage ich den Ort der Datei in WireShark ein unter \lstinline{Edit/Preferences/Protocol/SSL} und setze auch einen Ort wo Debug Informationen ausgegeben werden können.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/sslConfig.png}
+  \caption{SSL Config}
+  \label{fig:sslConfig}
+\end{figure}
+
+Problematischer Weise habe ich leider den Traffic trotzdem als gesamtes nicht lesen können (weil ich vermute, dass Wireshark Probleme hat mit dem verlorenen Bytes in dem verschlüsselten Paket), aber im LogFile bin ich fündig geworden, wo einzenle Fragmente entschlüsselt angezeigt werden!
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/windowsLogFile.png}
+  \caption{Windows Unecrypted Log File}
+  \label{fig:winLog}
+\end{figure}
+
+Und hier kann man nach einer kurzen Suche auch den gesuchten String finden und darin die gesuchte Datei namens \lstinline{evntrprv.mof}!
 
 \section{Manager9000}
 
