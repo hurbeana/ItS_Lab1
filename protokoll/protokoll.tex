@@ -701,7 +701,17 @@ Found the hash with number 109620
 Für den Suffix \lstinline{KKNrwOJpSoPnMS98rV5DXYWWSqod0aKs} ist die gesuchte Zahl \lstinline{109620}
 
 \subsection{Matryoshka}
-\emph{TO BE DONE}
+\lstinputlisting[caption=matryoshka\_166.py,label=code:matryoshka_166]{matryoshka_166.py}
+
+Dieses Script nimmt die \lstinline{matryoshka_166.zip} (oder ein anderes Ziel über argv[1]) und entpackt eine Zip nach der anderen. Jeden Schritt wird eine Zip entpackt mit 7Zip, anschließend wir diese rauskopiert aus den Ordner in dem sie ist und die alte (aus der die neue Zip kam) wird gelöscht (samt Ordner den sie erzeugt hat).
+
+Jeden Schritt wird in dem entzippt Content geschaut, falls ein String enthalten ist der mit Esse beginnt, wissen wir, dass es sich um die Flag handelt die dann ausgegeben wird und das Script beendet sich.
+
+Das Script kann man einfach starten. Man sollte die \lstinline{matryoshka_166.py} in einem \lstinline{zip} Ordner haben (außer man definiert sich ein anderes Ziel über dem ersten Argument)
+
+\begin{lstlisting}
+  
+\end{lstlisting}
 
 \subsection{Unforgettable}
 \emph{TO BE DONE}
