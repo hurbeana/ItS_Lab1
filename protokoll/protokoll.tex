@@ -73,7 +73,11 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\pagebreak
 \section{Forensik}
+Um diese Aufgabe zu loesen, mussten wir die PDF Vertragsunterlagen\_vertraulich genauer analysieren.
+Diese pdf haben wir mithilfe des links erlangt der bei der Aufgabe zu finden war. 
+Diesen Link haben wir mithilfe einer Port weiterleitung aufrufen können, dies ist genauer beschrieben im Punkt 3 Manager9000.
 
 \subsection{Lizenzvertrag}
 Auf Seite 1 der PDF ist der Preis geschwärzt, allerdings ist das Kopieren des Textes trotzdem möglich. Der Preis ist 1.924.785.215.
@@ -90,26 +94,37 @@ Dieser ist jedoch transparent und lässt bei erhöhtem/r Kontrast/Helligkeit noc
   \centering
     \includegraphics[width=0.6\textwidth]{./imgs/Forensik/Lizenz_Nachzahlung.png}
   \caption{Betrag der Nachzahlung}
-  \label{fig:allvoipcalls}
+  \label{fig:nachz}
 \end{figure}
 
 
 \subsection{Lizenz-Notiz}
-\emph{TO BE DONE}
+\emph{NOT TO BE DONE}
 
 \subsection{Appendix \#07}
-Hinter dem Bild ist das selbe Bild nur mit sichtbarer Flugzeit versteckt. Das haben wir mit Acrobat Pro herausgefunden.
+Um die Flugzeit herauszufinden, haben wir bemerkt, dass sich hinter dem Bild das die Flugzeiten anzeigen soll(aber nicht anzeigt), ein weiteres Bild befindet das jedoch kleiner skaliert wurde.
+Dies haben wir mit Acrobat Pro herausgefunden.
+
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.4\textwidth]{./imgs/Forensik/versteckte_flugzeit1.png}
+  \caption{Flugzeit 1}
+  \label{fig:flugzeit1}
+\end{figure}
+
+Wenn man es vegrößert kann man die Flugzeit ablesen.
 
 \begin{figure}[h!]
   \centering
     \includegraphics[width=0.4\textwidth]{./imgs/Forensik/versteckte_flugzeit.png}
-  \caption{Betrag der Nachzahlung}
-  \label{fig:allvoipcalls}
+  \caption{Flugzeit 2}
+  \label{fig:flugzeit2}
 \end{figure}
 
 \pagebreak
 \subsection{Appendix \#04}
-Mit Gimp haben wir Kontrast und Helligkeit maximiert und so den versteckten QR Code sichtbar sichtbar gemacht.
+Mit Gimp haben wir Kontrast und Helligkeit maximiert und so den versteckten QR Code sichtbar gemacht.
 Diesen haben wir dann mit einem QR Code Scanner ausgelesen.
 
 
@@ -122,10 +137,69 @@ Diesen haben wir dann mit einem QR Code Scanner ausgelesen.
 
 \pagebreak
 \subsection{Lizenz-Berechtigung}
-\emph{TO BE DONE}
+
+In Adobe Acrobat Pro gibt es die Funktion schwärzen, dieses schwärzen kann genauso in diesem Tab wieder rückgängig gemacht werden(siehe Abbildung 6). 
+Wenn man auf das Feld verborgener Text klickt, kann man den Text dann wieder anzeigen der ausgeblendet wurde. 
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.4\textwidth]{./imgs/Forensik/hidden_text_Klick.png}
+  \caption{Schwärz Funktion in Adobe Acrobat Pro.}
+  \label{fig:hiddentext100}
+\end{figure}
+
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/Forensik/hidden_text1.png}
+  \caption{Die Ergebnisse der ausgeblendeten Texte in Acrobat Pro}
+  \label{fig:hiddentext1}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.4\textwidth]{./imgs/Forensik/hidden_text3.png}
+  \caption{Der ausgeblendete Text neben der Stelle an der sie Ausgeblendet wurde}
+  \label{fig:hiddentext2}
+\end{figure}
+
+\pagebreak
 
 \subsection{Crypto-Ref-ID}
-\emph{TO BE DONE}
+
+
+Zur Lösung wurde wieder Acrobat Pro verwendet.
+Unter weitere Optionen den Menüpunkt Sicherheitseigenschaften auswählen.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.8\textwidth]{./imgs/Forensik/refid1.png}
+  \caption{Versteckter QR Code}
+  \label{fig:allvoipcalls}
+\end{figure}
+
+
+Danach öffnet sich folgendes Fenster.
+Hier klicken wir auf den Button Zusätzliche Metadaten 
+Siehe Abbildung 10.
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.8\textwidth]{./imgs/Forensik/refid2.png}
+  \caption{Versteckter QR Code}
+  \label{fig:allvoipcalls}
+\end{figure}
+
+Danach kann man die versteckenten Metadaten einsehen.
+ Darunter befindet sich die gesuchte Crypto-Ref-ID.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.8\textwidth]{./imgs/Forensik/refid3.png}
+  \caption{Versteckter QR Code}
+  \label{fig:allvoipcalls}
+\end{figure}
+
+\pagebreak
 
 \section{Intranet}
 
