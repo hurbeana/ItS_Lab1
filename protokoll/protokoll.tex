@@ -278,18 +278,90 @@ Um die eine Richtung als Audio-Datei zu bekommen habe ich \lstinline{Unsynchroni
 Beim Reverse Audio bekommt man eine Kontonummer für eine Transaktion, \lstinline{17321809}.
 
 \subsection{E-Mail}
-\emph{TO BE DONE}
+Um die Email zu finden habe ich zuerst nach verschiedenen Email Protokollen gefiltert.
+Mit dem \lstinline{SMTP} Protokoll wurden dann die richtigen Pakete angezeigt.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/smtp_filter.png}
+  \caption{Pakete filtern}
+  \label{fig:smtp_filter}
+\end{figure}
+
+Nach einer kurzen Suche und dem Inspizieren mehrerer vielversprechender Pakete habe ich das richtige gefunden und konnte dort das Passwort in klartext aus der Nachricht auslesen.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/email_pw.png}
+  \caption{Paswort aus der Email}
+  \label{fig:email_pw}
+\end{figure}
 
 \subsection{IRC}
-\emph{TO BE DONE}
+
+Ich habe die \lstinline{HotDogCap.cap} Datei, die wir aus der Labor Umgebung gecaptured haben, in Wireshark aufgemacht.
+
+Zuerst habe ich im Suchfenster nach IRC Paketen gefiltert mit dem Suchbefehl \lstinline{irc}, wobei mir aufgefallen ist dass einige \lstinline{PRIVMSG} IRC Befehle verschickt worden sind.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ws_ircfilter.png}
+  \caption{IRC Filter}
+  \label{fig:ircfilter}
+\end{figure}
+
+Anschließend habe ich eine der PRIVMSG Pakete ausgewählt und nur nach Paketen gefiltert die das Kommando enthalten. Anschließend kann man die entsprechende Nachricht finden die den Hash enthält.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ws_applyPrivMsgFilter.png}
+  \caption{PRIVMSG IRC Filter}
+  \label{fig:privmsgircfilter}
+\end{figure}
+
+Alternativ kann man auch auf eine IRC Nachricht \lstinline{Rechtsklick/Follow TCP Stream} und man bekommt die ganze Conversation.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ircfollowstream.png}
+  \caption{TCP Follow Stream}
+  \label{fig:tcpFollowStream}
+\end{figure}
+
+Und unten kann man da auch die Nachricht finden die den Hash enthält.
 
 \subsection{FTP}
-\emph{TO BE DONE}
 
-\subsection{FTP 2}
-\emph{TO BE DONE}
+Mit der \lstinline{SecureHotDog.cap} Datei offen in Wireshark und dem WLAN Passwort aus WLAN-Passwort \ref{wlanpwd} habe ich das Passwort in Wireshark unter dem Menu \lstinline{Edit/Preferences/IEEE 802.11} eingetragen und sichergestellt dass verwendet wird Pakete zu entschlüsseln.
 
-\subsection{WLAN-Passwort}
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ws_decryptionKeys.png}
+  \caption{Decryption Keys in Wireshark}
+  \label{fig:decryptionKeys}
+\end{figure}
+
+Anschließend habe ich mir sämtliche TCP Streams (mit \lstinline{Rechtsklick/Follow TCP Stream} auf einem TCP Paket) wieder angeschaut und habe folgenden gefunden, wo Passwort und Nutzername einer FTP Transmission zu sehen sind.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/ws_ftpStream.png}
+  \caption{FTP Transmission}
+  \label{fig:ftpTransmission}
+\end{figure}
+
+\subsection{FTP 2} \label{FTP2}
+
+Ausgehend vom dem Setup der letzten Aufgabe sieht man in dem \hyperref[fig:ftpTransmission]{Screenshot~\ref*{fig:ftpTransmission}} auch den Namen der Datei die verschickt worden ist. In dem nächsten TCP Stream kann man die Datei auch sehen, bei der es sich um einen Private Key handelt.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/privateKey.png}
+  \caption{Private Key}
+  \label{fig:privateKey}
+\end{figure}
+
+\subsection{WLAN-Passwort} \label{wlanpwd}
 
 Um an die Hashes des WPA-Passwortes zu kommen haben wir durch das oben angegebene Tutorial herausgefunden dass man mit \lstinline{airodump-ng -w psk wlp3s0} den nötigen Handshake abfangen kann. Dafür muss sich aber ein Client beim Router authentifizieren, worauf wir 10 Minuten lang gewartet haben, aber leider keinen Handshake abgefangen haben. Ein paar Minuten später haben wir herausgefunden, dass wir einen Client deauhentifizieren können mit \lstinline{aireplay-ng -0 1 -a  00:18:39:BF:D7:66 -c 80:1F:02:AB:A9:9E wlp3s0} wo die erste MAC Addresse die vom SecureHotDog ist und die zweite eine von den zwei Clients die wir beobachtet haben.
 
@@ -371,7 +443,26 @@ PS C:\Users\hurbe\Desktop\hashcat-5.0.0> .\hashcat64.exe -a 0 -m 2500 --show .\S
 Hier kann man das Passwort \lstinline{Aufmunterung} sehen.
 
 \subsection{HTTPS}
-\emph{TO BE DONE}
+
+Mit dem Private Key aus \hyperref[FTP2]{FTP2~\ref*{FTP2}} kann ich nun den verschlüsselten Traffic lesen. Dazu trage ich den Ort der Datei in WireShark ein unter \lstinline{Edit/Preferences/Protocol/SSL} und setze auch einen Ort wo Debug Informationen ausgegeben werden können.
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/sslConfig.png}
+  \caption{SSL Config}
+  \label{fig:sslConfig}
+\end{figure}
+
+Problematischer Weise habe ich leider den Traffic trotzdem als gesamtes nicht lesen können (weil ich vermute, dass Wireshark Probleme hat mit dem verlorenen Bytes in dem verschlüsselten Paket), aber im LogFile bin ich fündig geworden, wo einzenle Fragmente entschlüsselt angezeigt werden!
+
+\begin{figure}[h!]
+  \centering
+    \includegraphics[width=0.6\textwidth]{./imgs/intranet_screenshots/windowsLogFile.png}
+  \caption{Windows Unecrypted Log File}
+  \label{fig:winLog}
+\end{figure}
+
+Und hier kann man nach einer kurzen Suche auch den gesuchten String finden und darin die gesuchte Datei namens \lstinline{evntrprv.mof}!
 
 \section{Manager9000}
 
@@ -641,7 +732,17 @@ Found the hash with number 109620
 Für den Suffix \lstinline{KKNrwOJpSoPnMS98rV5DXYWWSqod0aKs} ist die gesuchte Zahl \lstinline{109620}
 
 \subsection{Matryoshka}
-\emph{TO BE DONE}
+\lstinputlisting[caption=matryoshka\_166.py,label=code:matryoshka_166]{matryoshka_166.py}
+
+Dieses Script nimmt die \lstinline{matryoshka_166.zip} (oder ein anderes Ziel über argv[1]) und entpackt eine Zip nach der anderen. Jeden Schritt wird eine Zip entpackt mit 7Zip, anschließend wir diese rauskopiert aus den Ordner in dem sie ist und die alte (aus der die neue Zip kam) wird gelöscht (samt Ordner den sie erzeugt hat).
+
+Jeden Schritt wird in dem entzippt Content geschaut, falls ein String enthalten ist der mit Esse beginnt, wissen wir, dass es sich um die Flag handelt die dann ausgegeben wird und das Script beendet sich.
+
+Das Script kann man einfach starten. Man sollte die \lstinline{matryoshka_166.py} in einem \lstinline{zip} Ordner haben (außer man definiert sich ein anderes Ziel über dem ersten Argument)
+
+\begin{lstlisting}
+  
+\end{lstlisting}
 
 \subsection{Unforgettable}
 \emph{TO BE DONE}
